@@ -181,3 +181,4 @@ Issues? Check:
 - Vercel deployment logs
 - Environment variables are set correctly (`GROQ_API_KEY`)
 - API key is valid (test at console.groq.com)
+# redeploy

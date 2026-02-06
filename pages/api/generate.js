@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
 CRITICAL RULES:
 - Base ALL recommendations on the provided LZDW questionnaire data
-- Use ONLY proven AWS architecture patterns (Petra multi-OU, hub-spoke network, etc.)
+- Use ONLY proven AWS Well-Architected patterns (multi-OU hierarchical, hub-spoke network, etc.)
 - NEVER invent services or make assumptions not supported by the questionnaire
 - Generate a structured JSON response with these exact fields
 
@@ -34,7 +34,7 @@ Your output MUST be valid JSON with this structure:
   "client_name": "string",
   "workshop_date": "string",
   "account_structure": {
-    "pattern": "petra-multi-ou" | "simple-workload" | "hub-spoke",
+    "pattern": "multi-ou-hierarchical" | "simple-workload" | "federated",
     "master_account": { "name": "string", "email": "string", "purpose": "string" },
     "security_ou": [{ "name": "string", "email": "string", "purpose": "string" }],
     "workload_ou": [{ "name": "string", "email": "string", "purpose": "string" }],

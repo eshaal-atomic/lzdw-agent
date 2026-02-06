@@ -142,6 +142,46 @@ export default function Home() {
           <mxGeometry x="310" y="350" width="130" height="35" as="geometry"/>
         </mxCell>
         
+        <!-- Global Services Layer -->
+        <mxCell id="global-services" value="GLOBAL SERVICES" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=11;fontStyle=1;verticalAlign=top;align=center;spacingTop=5;dashed=1;dashPattern=3 3;" vertex="1" parent="1">
+          <mxGeometry x="520" y="40" width="980" height="80" as="geometry"/>
+        </mxCell>
+        
+        <!-- Route 53 -->
+        <mxCell id="route53" value="Route 53" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="560" y="70" width="120" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- CloudFront -->
+        <mxCell id="cloudfront" value="CloudFront CDN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="700" y="70" width="120" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- WAF -->
+        <mxCell id="waf" value="AWS WAF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD344C;strokeColor=#A31327;fontColor=#FFFFFF;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="840" y="70" width="120" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- Shield -->
+        <mxCell id="shield" value="AWS Shield" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD344C;strokeColor=#A31327;fontColor=#FFFFFF;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="980" y="70" width="120" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- Certificate Manager -->
+        <mxCell id="acm" value="ACM (SSL/TLS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=#059669;fontColor=#FFFFFF;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1120" y="70" width="120" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- Secrets Manager -->
+        <mxCell id="secrets" value="Secrets Manager" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD344C;strokeColor=#A31327;fontColor=#FFFFFF;fontSize=10;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1260" y="70" width="120" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- Arrow from CloudFront to workloads -->
+        <mxCell id="arrow-cf-workload" value="HTTPS Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B5CF6;strokeWidth=2;endArrow=block;endFill=1;fontSize=9;fontColor=#6D28D9;" edge="1" parent="1" source="cloudfront" target="workload-ou-container">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
         <!-- Arrow from Master to OUs -->
         <mxCell id="arrow-master-ou" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FF9900;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="master-section" target="security-ou-container">
           <mxGeometry relative="1" as="geometry"/>
@@ -210,23 +250,69 @@ export default function Home() {
         </mxCell>
         
         <!-- VPC for each workload -->
-        <mxCell id="vpc-${idx}" value="VPC" style="sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=10;fontStyle=1;strokeColor=#22C55E;fillColor=#FFFFFF;verticalAlign=top;align=left;spacingLeft=10;fontColor=#22C55E;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="${xPos + 10}" y="290" width="140" height="130" as="geometry"/>
+        <mxCell id="vpc-${idx}" value="VPC (10.${idx}.0.0/16)" style="sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=10;fontStyle=1;strokeColor=#22C55E;fillColor=#FFFFFF;verticalAlign=top;align=left;spacingLeft=10;fontColor=#22C55E;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 10}" y="290" width="140" height="210" as="geometry"/>
         </mxCell>
         
-        <!-- Public Subnet -->
-        <mxCell id="pub-sub-${idx}" value="Public Subnet" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;fontSize=9" vertex="1" parent="1">
-          <mxGeometry x="${xPos + 20}" y="315" width="120" height="30" as="geometry"/>
+        <!-- Availability Zone A -->
+        <mxCell id="az-a-${idx}" value="AZ-A" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1;fontSize=8;fontStyle=1;verticalAlign=top;align=center;dashed=1;dashPattern=2 2;" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 20}" y="315" width="55" height="175" as="geometry"/>
         </mxCell>
         
-        <!-- Private Subnet -->
-        <mxCell id="priv-sub-${idx}" value="Private Subnet" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;fontSize=9" vertex="1" parent="1">
-          <mxGeometry x="${xPos + 20}" y="355" width="120" height="30" as="geometry"/>
+        <!-- Availability Zone B -->
+        <mxCell id="az-b-${idx}" value="AZ-B" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1;fontSize=8;fontStyle=1;verticalAlign=top;align=center;dashed=1;dashPattern=2 2;" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 85}" y="315" width="55" height="175" as="geometry"/>
         </mxCell>
         
-        <!-- Database Subnet -->
-        <mxCell id="db-sub-${idx}" value="DB Subnet" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E9D5FF;strokeColor=#9333EA;fontSize=9" vertex="1" parent="1">
-          <mxGeometry x="${xPos + 20}" y="395" width="120" height="30" as="geometry"/>
+        <!-- Public Subnets (both AZs) -->
+        <mxCell id="pub-sub-${idx}-a" value="Public" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;fontSize=8" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 23}" y="330" width="49" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="pub-sub-${idx}-b" value="Public" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;fontSize=8" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 88}" y="330" width="49" height="25" as="geometry"/>
+        </mxCell>
+        
+        <!-- NAT Gateways -->
+        <mxCell id="nat-${idx}-a" value="NAT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#CC7700;fontColor=#FFFFFF;fontSize=7" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 33}" y="360" width="30" height="15" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="nat-${idx}-b" value="NAT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#CC7700;fontColor=#FFFFFF;fontSize=7" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 98}" y="360" width="30" height="15" as="geometry"/>
+        </mxCell>
+        
+        <!-- Application Load Balancer -->
+        <mxCell id="alb-${idx}" value="ALB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=8;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 30}" y="380" width="80" height="18" as="geometry"/>
+        </mxCell>
+        
+        <!-- Private Subnets (both AZs) -->
+        <mxCell id="priv-sub-${idx}-a" value="Private" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;fontSize=8" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 23}" y="405" width="49" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="priv-sub-${idx}-b" value="Private" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#3B82F6;fontSize=8" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 88}" y="405" width="49" height="25" as="geometry"/>
+        </mxCell>
+        
+        <!-- Auto Scaling Group -->
+        <mxCell id="asg-${idx}" value="ASG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=#059669;fontColor=#FFFFFF;fontSize=7" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 30}" y="435" width="80" height="15" as="geometry"/>
+        </mxCell>
+        
+        <!-- Database Subnets (both AZs) -->
+        <mxCell id="db-sub-${idx}-a" value="DB" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E9D5FF;strokeColor=#9333EA;fontSize=8" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 23}" y="455" width="49" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="db-sub-${idx}-b" value="DB" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E9D5FF;strokeColor=#9333EA;fontSize=8" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 88}" y="455" width="49" height="25" as="geometry"/>
+        </mxCell>
+        
+        <!-- RDS Multi-AZ -->
+        <mxCell id="rds-${idx}" value="RDS Multi-AZ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=7" vertex="1" parent="1">
+          <mxGeometry x="${xPos + 30}" y="465" width="80" height="15" as="geometry"/>
         </mxCell>`;
       });
     }
@@ -340,6 +426,26 @@ export default function Home() {
           <mxGeometry x="230" y="970" width="90" height="20" as="geometry"/>
         </mxCell>
         
+        <mxCell id="leg-nat" value="NAT Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#CC7700;fontColor=#FFFFFF;fontSize=9" vertex="1" parent="1">
+          <mxGeometry x="330" y="970" width="70" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="leg-alb" value="ALB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=9" vertex="1" parent="1">
+          <mxGeometry x="140" y="1000" width="50" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="leg-asg" value="Auto Scaling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=#059669;fontColor=#FFFFFF;fontSize=9" vertex="1" parent="1">
+          <mxGeometry x="200" y="1000" width="70" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="leg-rds" value="RDS Multi-AZ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=9" vertex="1" parent="1">
+          <mxGeometry x="280" y="1000" width="80" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="leg-az" value="Availability Zone" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;fontSize=9;dashed=1;dashPattern=2 2;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1030" width="100" height="20" as="geometry"/>
+        </mxCell>
+        
         <mxCell id="leg-tgw-line" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#F59E0B;strokeWidth=2;endArrow=block;endFill=1;startArrow=block;startFill=1;" edge="1" parent="1">
           <mxGeometry x="140" y="1005" width="80" height="20" as="geometry">
             <mxPoint x="140" y="1015" as="sourcePoint"/>
@@ -367,7 +473,7 @@ export default function Home() {
           <mxGeometry x="500" y="840" width="1000" height="220" as="geometry"/>
         </mxCell>
         
-        <mxCell id="info-pattern" value="Pattern: ${architecture.account_structure.pattern}" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#232F3E;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="info-pattern" value="Architecture Pattern: ${architecture.account_structure.pattern.replace('multi-ou-hierarchical', 'Multi-OU Hierarchical').replace('simple-workload', 'Simple Workload').replace('federated', 'Federated')}" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#232F3E;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="520" y="870" width="460" height="25" as="geometry"/>
         </mxCell>
         
@@ -436,7 +542,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <main style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      <main style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #232F3E 0%, #1a2332 100%)' }}>
         {stage === 'input' && (
           <div style={{ padding: '40px 20px' }}>
             <div style={{ maxWidth: '900px', margin: '0 auto' }}>
@@ -543,14 +649,14 @@ export default function Home() {
                   style={{
                     width: '100%',
                     padding: '16px 32px',
-                    background: (fileContent.trim() && !isProcessing) ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#cbd5e0',
+                    background: (fileContent.trim() && !isProcessing) ? 'linear-gradient(135deg, #FF9900 0%, #CC7700 100%)' : '#cbd5e0',
                     color: 'white',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '16px',
                     fontWeight: '600',
                     cursor: (fileContent.trim() && !isProcessing) ? 'pointer' : 'not-allowed',
-                    boxShadow: (fileContent.trim() && !isProcessing) ? '0 4px 14px rgba(102, 126, 234, 0.4)' : 'none'
+                    boxShadow: (fileContent.trim() && !isProcessing) ? '0 4px 14px rgba(255, 153, 0, 0.4)' : 'none'
                   }}
                 >
                   {isProcessing ? 'Processing...' : 'Generate AWS Architecture'}

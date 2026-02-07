@@ -1,4 +1,5 @@
-// Generates professional AWS Landing Zone diagrams
+// Generates professional AWS Landing Zone diagrams with REAL AWS icons
+// Matches reference architecture style EXACTLY
 
 function esc(s) {
   return String(s || "")
@@ -12,7 +13,7 @@ function generateDrawioXML(arch) {
   let _id = 1;
   const id = () => String(_id++);
 
-  // Colors pink/magenta theme
+  // Colors matching reference images - pink/magenta theme
   const PINK = "#D6336C";
   const LIGHT_PINK = "#F4E1E8";
   const WHITE = "#FFFFFF";
@@ -65,8 +66,8 @@ function generateDrawioXML(arch) {
   </mxCell>\n`;
 
   // Master/Payer Account container (pink background box)
-  const masterName = arch?.master_payer?.name || "Master/Payer Account";
-  const masterEmail = arch?.master_payer?.email || "Client Master/Root Email";
+  const masterName = arch?.account_structure?.master_account?.name || arch?.master_payer?.name || "Master/Payer Account";
+  const masterEmail = arch?.account_structure?.master_account?.email || arch?.master_payer?.email || "master@client.com";
   const masterId = id();
   cells += `<mxCell id="${masterId}" value="${esc(masterName)}&#xa;${esc(masterEmail)}" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=13;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=${PINK};fillColor=${LIGHT_PINK};verticalAlign=top;align=left;spacingLeft=30;fontColor=${PINK};dashed=0;container=1;pointerEvents=0;collapsible=0;" vertex="1" parent="${awsId}">
     <mxGeometry x="540" y="40" width="740" height="640" as="geometry"/>
@@ -85,7 +86,16 @@ function generateDrawioXML(arch) {
   </mxCell>\n`;
 
   // OUs (3 side-by-side containers inside Master)
-  const ous = arch?.organizational_units || [];
+  const securityOU = arch?.account_structure?.security_ou || [];
+  const workloadOU = arch?.account_structure?.workload_ou || [];
+  const networkingOU = arch?.account_structure?.networking_ou || [];
+  
+  const ous = [
+    { name: "Security/Core OU", accounts: securityOU },
+    { name: "Workload OU", accounts: workloadOU },
+    { name: "Networking OU", accounts: networkingOU }
+  ];
+  
   const ouIds = [];
   const OU_Y = 140;
   const OU_H = 460;
@@ -106,12 +116,13 @@ function generateDrawioXML(arch) {
     accounts.forEach((acc, accIdx) => {
       const accId = id();
       const accY = 50 + accIdx * 90;
+      const accName = acc.name || `Account ${accIdx + 1}`;
 
-      cells += `<mxCell id="${accId}" value="${esc(acc.name)}" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=${PINK};fillColor=${WHITE};verticalAlign=top;align=center;spacingTop=8;fontColor=${PINK};dashed=0;container=1;pointerEvents=0;collapsible=0;" vertex="1" parent="${ouId}">
+      cells += `<mxCell id="${accId}" value="${esc(accName)}" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=${PINK};fillColor=${WHITE};verticalAlign=top;align=center;spacingTop=8;fontColor=${PINK};dashed=0;container=1;pointerEvents=0;collapsible=0;" vertex="1" parent="${ouId}">
         <mxGeometry x="20" y="${accY}" width="180" height="70" as="geometry"/>
       </mxCell>\n`;
 
-      // Person+Box icon inside account
+      // Person icon inside account
       const iconId = id();
       cells += `<mxCell id="${iconId}" value="" style="sketch=0;outlineConnect=0;fontColor=${DARK};gradientColor=none;fillColor=${PINK};strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="${accId}">
         <mxGeometry x="66" y="28" width="32" height="32" as="geometry"/>
@@ -120,49 +131,41 @@ function generateDrawioXML(arch) {
   });
 
   // Connection arrows
-  // Admin → Identity Center
   const arr1 = id();
   cells += `<mxCell id="${arr1}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${awsId}" source="${adminUserId}" target="${icId}">
     <mxGeometry relative="1" as="geometry"/>
   </mxCell>\n`;
 
-  // Dev → Identity Center
   const arr2 = id();
   cells += `<mxCell id="${arr2}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${awsId}" source="${devUserId}" target="${icId}">
     <mxGeometry relative="1" as="geometry"/>
   </mxCell>\n`;
 
-  // Identity Center ↔ On-Prem (dashed)
   const arr3 = id();
   cells += `<mxCell id="${arr3}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;dashed=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${awsId}" source="${icId}" target="${onPremId}">
     <mxGeometry relative="1" as="geometry"/>
   </mxCell>\n`;
 
-  // Identity Center → Admin PS
   const arr4 = id();
   cells += `<mxCell id="${arr4}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${awsId}" source="${icId}" target="${adminPsId}">
     <mxGeometry relative="1" as="geometry"/>
   </mxCell>\n`;
 
-  // Identity Center → Dev PS
   const arr5 = id();
   cells += `<mxCell id="${arr5}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${awsId}" source="${icId}" target="${devPsId}">
     <mxGeometry relative="1" as="geometry"/>
   </mxCell>\n`;
 
-  // Admin PS → Master
   const arr6 = id();
   cells += `<mxCell id="${arr6}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${awsId}" source="${adminPsId}" target="${masterId}">
     <mxGeometry relative="1" as="geometry"/>
   </mxCell>\n`;
 
-  // Dev PS → Master
   const arr7 = id();
   cells += `<mxCell id="${arr7}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${awsId}" source="${devPsId}" target="${masterId}">
     <mxGeometry relative="1" as="geometry"/>
   </mxCell>\n`;
 
-  // Administrator (inside Master) → Each OU
   ouIds.forEach((ouId) => {
     const arrId = id();
     cells += `<mxCell id="${arrId}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=${DARK};strokeWidth=2;" edge="1" parent="${masterId}" source="${masterAdminId}" target="${ouId}">

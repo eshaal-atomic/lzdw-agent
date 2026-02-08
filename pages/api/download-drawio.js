@@ -227,82 +227,7 @@ export default async function handler(req, res) {
     cells += `
       <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="385" y="385" as="sexport default async function handler(req, res) {
-      </mxCell>`;
-
-      // OU label
-      cells += `
-        <mxCell id="${getId()}" value="${ou.name}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="${currentX + 10}" y="${ouY + 60}" width="${ouWidth - 20}" height="20" as="geometry"/>
-        </mxCell>`;
-
-      // Accounts inside OU
-      let accountY = ouY + 90;
-
-      ou.accounts.slice(0, 3).forEach((account) => {
-        const accountName = account.name || 'Account';
-
-        // Account box (pink)
-        cells += `
-          <mxCell id="${getId()}" value="${accountName}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
-            <mxGeometry x="${currentX + 15}" y="${accountY}" width="${ouWidth - 30}" height="60" as="geometry"/>
-          </mxCell>`;
-
-        // Account icon (user + box)
-        cells += `
-          <mxCell id="${getId()}" value="👤" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=20;fontColor=${PINK};" vertex="1" parent="1">
-            <mxGeometry x="${currentX + ouWidth/2 - 20}" y="${accountY + 30}" width="20" height="20" as="geometry"/>
-          </mxCell>`;
-
-        cells += `
-          <mxCell id="${getId()}" value="📦" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontColor=${PINK};" vertex="1" parent="1">
-            <mxGeometry x="${currentX + ouWidth/2 + 5}" y="${accountY + 30}" width="20" height="20" as="geometry"/>
-          </mxCell>`;
-
-        accountY += 75;
-      });
-
-      // Arrow from Master to OU (downward, CLEAN routing)
-      cells += `
-        <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="${currentX + ouWidth/2}" y="240" as="sourcePoint"/>
-            <mxPoint x="${currentX + ouWidth/2}" y="${ouY}" as="targetPoint"/>
-            <Array as="points">
-              <mxPoint x="${currentX + ouWidth/2}" y="280"/>
-              <mxPoint x="${currentX + ouWidth/2}" y="280"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>`;
-
-      currentX += ouWidth + ouGap;
-    });
-
-    // Generate final XML
-    const drawioXml = `<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" version="24.0.0">
-  <diagram name="AWS Landing Zone Architecture" id="aws-lz">
-    <mxGraphModel dx="2000" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="750" background="#FFFFFF">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        ${cells}
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
-
-    return res.status(200).json({ xml: drawioXml });
-
-  } catch (error) {
-    console.error('Draw.io generation error:', error);
-    return res.status(500).json({ 
-      error: 'Failed to generate Draw.io diagram',
-      message: error.message 
-    });
-  }
-}
-ourcePoint"/>
+          <mxPoint x="385" y="385" as="sourcePoint"/>
           <mxPoint x="${permX}" y="${permY2 + 24}" as="targetPoint"/>
           <Array as="points">
             <mxPoint x="460" y="385"/>
@@ -398,7 +323,6 @@ ourcePoint"/>
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="${currentX + ouWidth/2}" y="270" as="sourcePoint"/>
             <mxPoint x="${currentX + ouWidth/2}" y="${ouY}" as="targetPoint"/>
-          </Array>
           </mxGeometry>
         </mxCell>`;
 

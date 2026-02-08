@@ -10,7 +10,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Architecture data is required' });
     }
 
-    // Extract data
     const {
       client_name = 'Client',
       account_structure,
@@ -24,301 +23,323 @@ export default async function handler(req, res) {
     } = account_structure;
 
     // EXACT COLORS from your reference images
-    const COLORS = {
-      masterBorder: '#D6336C',
-      masterFill: '#FFE6F0',
-      ouBorder: '#D6336C',
-      accountBorder: '#D6336C',
-      accountFill: '#F4E1E8',
-      permissionSetBg: '#DD344C',
-      controlTowerBg: '#DD344C',
-      text: '#232F3E',
-    };
+    const PINK = '#D6336C';
+    const LIGHT_PINK = '#F4E1E8';
+    const WHITE = '#FFFFFF';
+    const DARK = '#232F3E';
+    const RED = '#DD344C';
 
     let cellId = 100;
-    const getNextId = () => `cell-${cellId++}`;
+    const getId = () => `cell-${cellId++}`;
 
     let cells = '';
 
-    // AWS Cloud badge (top left corner)
+    // AWS Cloud badge (top left)
     cells += `
-      <mxCell id="${getNextId()}" value="AWS Cloud" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#232F3E;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="1">
-        <mxGeometry x="240" y="50" width="120" height="30" as="geometry"/>
+      <mxCell id="${getId()}" value="AWS Cloud" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#232F3E;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="1">
+        <mxGeometry x="230" y="50" width="100" height="30" as="geometry"/>
       </mxCell>`;
 
-    // Main container (dashed border)
+    // Main dashed container
     cells += `
-      <mxCell id="${getNextId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#232F3E;strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+      <mxCell id="${getId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#232F3E;strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
         <mxGeometry x="230" y="90" width="1110" height="570" as="geometry"/>
       </mxCell>`;
 
-    // Master/Payer Account (top center, pink box)
+    // Master/Payer Account container (BIG PINK BOX)
     const masterName = master_account?.name || `${client_name} Master/Payer Account`;
     const masterEmail = master_account?.email || 'Client Master/Root Email';
+
+    cells += `
+      <mxCell id="${getId()}" value="${masterName}&#xa;${masterEmail}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${LIGHT_PINK};strokeColor=${PINK};strokeWidth=3;fontSize=13;fontStyle=1;fontColor=${PINK};verticalAlign=top;align=left;spacingLeft=15;spacingTop=10;" vertex="1" parent="1">
+        <mxGeometry x="250" y="110" width="1070" height="160" as="geometry"/>
+      </mxCell>`;
+
+    // Control Tower ICON (pink square with white symbol)
+    cells += `
+      <mxCell id="${getId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${RED};strokeColor=none;" vertex="1" parent="1">
+        <mxGeometry x="270" y="160" width="50" height="50" as="geometry"/>
+      </mxCell>`;
     
-    const masterX = 280;
-    const masterY = 110;
-    const masterW = 360;
-    const masterH = 140;
-
     cells += `
-      <mxCell id="${getNextId()}" value="${masterName}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${COLORS.masterFill};strokeColor=${COLORS.masterBorder};strokeWidth=3;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=15;spacingTop=10;" vertex="1" parent="1">
-        <mxGeometry x="${masterX}" y="${masterY}" width="${masterW}" height="${masterH}" as="geometry"/>
-      </mxCell>`;
-
-    // Email below title
-    cells += `
-      <mxCell id="${getNextId()}" value="${masterEmail}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=${COLORS.text};spacingLeft=15;" vertex="1" parent="1">
-        <mxGeometry x="${masterX}" y="${masterY + 30}" width="${masterW}" height="20" as="geometry"/>
-      </mxCell>`;
-
-    // Control Tower icon (inside master box, left)
-    cells += `
-      <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.control_tower;" vertex="1" parent="1">
-        <mxGeometry x="${masterX + 70}" y="${masterY + 65}" width="50" height="50" as="geometry"/>
+      <mxCell id="${getId()}" value="✦" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=28;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="270" y="160" width="50" height="50" as="geometry"/>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="Control Tower" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${COLORS.text};" vertex="1" parent="1">
-        <mxGeometry x="${masterX + 45}" y="${masterY + 115}" width="100" height="20" as="geometry"/>
+      <mxCell id="${getId()}" value="Control Tower" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${DARK};fontStyle=0;" vertex="1" parent="1">
+        <mxGeometry x="245" y="215" width="100" height="20" as="geometry"/>
       </mxCell>`;
 
-    // Administrator icon (inside master box, right side)
+    // Administrator icon (user + gear)
     cells += `
-      <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="1">
-        <mxGeometry x="${masterX + 260}" y="${masterY + 58}" width="35" height="35" as="geometry"/>
-      </mxCell>`;
-
-    cells += `
-      <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourcegroups;" vertex="1" parent="1">
-        <mxGeometry x="${masterX + 255}" y="${masterY + 90}" width="25" height="25" as="geometry"/>
+      <mxCell id="${getId()}" value="👤" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=28;fontColor=${RED};" vertex="1" parent="1">
+        <mxGeometry x="600" y="130" width="30" height="30" as="geometry"/>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="Administrator" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${COLORS.text};" vertex="1" parent="1">
-        <mxGeometry x="${masterX + 235}" y="${masterY + 115}" width="90" height="20" as="geometry"/>
-      </mxCell>`;
-
-    // Administrator/Root user (left side, outside container)
-    const adminX = 90;
-    const adminY = 240;
-
-    cells += `
-      <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#666666;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="1">
-        <mxGeometry x="${adminX + 20}" y="${adminY}" width="40" height="40" as="geometry"/>
+      <mxCell id="${getId()}" value="⚙" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=20;fontColor=${DARK};" vertex="1" parent="1">
+        <mxGeometry x="625" y="125" width="20" height="20" as="geometry"/>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="Administrator/Root" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontColor=${COLORS.text};fontStyle=1;" vertex="1" parent="1">
-        <mxGeometry x="${adminX - 20}" y="${adminY + 45}" width="120" height="20" as="geometry"/>
-      </mxCell>`;
-
-    // Developers/Testers user (left side, outside container)
-    const devY = adminY + 120;
-
-    cells += `
-      <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#666666;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.users;" vertex="1" parent="1">
-        <mxGeometry x="${adminX + 15}" y="${devY}" width="50" height="50" as="geometry"/>
+      <mxCell id="${getId()}" value="📦" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=20;fontColor=${DARK};" vertex="1" parent="1">
+        <mxGeometry x="625" y="145" width="20" height="20" as="geometry"/>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="Developers/Testers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontColor=${COLORS.text};fontStyle=1;" vertex="1" parent="1">
-        <mxGeometry x="${adminX - 20}" y="${devY + 55}" width="120" height="20" as="geometry"/>
+      <mxCell id="${getId()}" value="Administrator" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${DARK};" vertex="1" parent="1">
+        <mxGeometry x="575" y="165" width="80" height="20" as="geometry"/>
       </mxCell>`;
 
-    // Identity Center (left side, inside container)
-    const identityX = 280;
-    const identityY = 290;
-
+    // Administrator/Root user (left side, outside)
     cells += `
-      <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.single_sign_on;" vertex="1" parent="1">
-        <mxGeometry x="${identityX + 15}" y="${identityY}" width="50" height="50" as="geometry"/>
+      <mxCell id="${getId()}" value="👤" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=32;fontColor=#666666;" vertex="1" parent="1">
+        <mxGeometry x="80" y="200" width="50" height="50" as="geometry"/>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="Identity Center" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${COLORS.text};fontStyle=1;" vertex="1" parent="1">
-        <mxGeometry x="${identityX - 10}" y="${identityY + 55}" width="100" height="20" as="geometry"/>
+      <mxCell id="${getId()}" value="Administrator/Root" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="55" y="250" width="100" height="20" as="geometry"/>
       </mxCell>`;
 
-    // On-Premises / Cloud AD (below Identity Center)
-    const onPremY = identityY + 110;
-
+    // Developers/Testers user
     cells += `
-      <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#666666;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.traditional_server;" vertex="1" parent="1">
-        <mxGeometry x="${identityX + 15}" y="${onPremY}" width="50" height="50" as="geometry"/>
+      <mxCell id="${getId()}" value="👥" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=32;fontColor=#666666;" vertex="1" parent="1">
+        <mxGeometry x="80" y="320" width="50" height="50" as="geometry"/>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="On-Premises / AWS Cloud AD" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${COLORS.text};" vertex="1" parent="1">
-        <mxGeometry x="${identityX - 15}" y="${onPremY + 55}" width="110" height="30" as="geometry"/>
+      <mxCell id="${getId()}" value="Developers/Testers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="55" y="370" width="100" height="20" as="geometry"/>
       </mxCell>`;
 
-    // Arrow: Admin → Identity Center
+    // Identity Center ICON (red square with white magnifying glass)
     cells += `
-      <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+      <mxCell id="${getId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${RED};strokeColor=none;" vertex="1" parent="1">
+        <mxGeometry x="330" y="330" width="60" height="60" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="🔍" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=32;fontColor=#FFFFFF;" vertex="1" parent="1">
+        <mxGeometry x="330" y="330" width="60" height="60" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="Identity Center" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="310" y="395" width="100" height="20" as="geometry"/>
+      </mxCell>`;
+
+    // On-Premises icon (building)
+    cells += `
+      <mxCell id="${getId()}" value="🏢" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=40;fontColor=#666666;" vertex="1" parent="1">
+        <mxGeometry x="335" y="480" width="50" height="50" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="⚠" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=20;fontColor=#666666;" vertex="1" parent="1">
+        <mxGeometry x="365" y="510" width="20" height="20" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="On-Premises&#xa;/ AWS Cloud AD" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${DARK};" vertex="1" parent="1">
+        <mxGeometry x="310" y="535" width="100" height="30" as="geometry"/>
+      </mxCell>`;
+
+    // Permission Sets (red squares with checkmarks)
+    const permX = 490;
+    const permY1 = 280;
+    const permY2 = 360;
+
+    // Admin Permission Set
+    cells += `
+      <mxCell id="${getId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${RED};strokeColor=none;" vertex="1" parent="1">
+        <mxGeometry x="${permX}" y="${permY1}" width="50" height="50" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="✓" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=32;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="${permX}" y="${permY1}" width="50" height="50" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="⚙" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontColor=#FFFFFF;" vertex="1" parent="1">
+        <mxGeometry x="${permX + 30}" y="${permY1 + 25}" width="20" height="20" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="Admin Permission&#xa;Set" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${DARK};" vertex="1" parent="1">
+        <mxGeometry x="${permX - 10}" y="${permY1 + 55}" width="70" height="30" as="geometry"/>
+      </mxCell>`;
+
+    // Dev/Tester Permission Set
+    cells += `
+      <mxCell id="${getId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${RED};strokeColor=none;" vertex="1" parent="1">
+        <mxGeometry x="${permX}" y="${permY2}" width="50" height="50" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="✓" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=32;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="${permX}" y="${permY2}" width="50" height="50" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="⚙" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontColor=#FFFFFF;" vertex="1" parent="1">
+        <mxGeometry x="${permX + 30}" y="${permY2 + 25}" width="20" height="20" as="geometry"/>
+      </mxCell>`;
+
+    cells += `
+      <mxCell id="${getId()}" value="Dev/Tester&#xa;Permission Set" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${DARK};" vertex="1" parent="1">
+        <mxGeometry x="${permX - 10}" y="${permY2 + 55}" width="70" height="30" as="geometry"/>
+      </mxCell>`;
+
+    // Arrows: Users → Identity Center (CLEAN, NO OVERLAP)
+    cells += `
+      <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.3;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${adminX + 80}" y="${adminY + 20}" as="sourcePoint"/>
-          <mxPoint x="${identityX + 15}" y="${identityY + 25}" as="targetPoint"/>
+          <mxPoint x="155" y="225" as="sourcePoint"/>
+          <mxPoint x="330" y="348" as="targetPoint"/>
         </mxGeometry>
       </mxCell>`;
 
-    // Arrow: Developers → Identity Center
     cells += `
-      <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+      <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.7;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${adminX + 80}" y="${devY + 25}" as="sourcePoint"/>
-          <mxPoint x="${identityX + 15}" y="${identityY + 35}" as="targetPoint"/>
+          <mxPoint x="155" y="345" as="sourcePoint"/>
+          <mxPoint x="330" y="372" as="targetPoint"/>
         </mxGeometry>
       </mxCell>`;
 
-    // Arrow: Identity Center ↔ On-Prem (bidirectional)
+    // Arrow: Identity Center ↔ On-Prem
     cells += `
-      <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;startArrow=classic;startFill=1;endArrow=classic;endFill=1;" edge="1" parent="1">
+      <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${identityX + 40}" y="${identityY + 50}" as="sourcePoint"/>
-          <mxPoint x="${identityX + 40}" y="${onPremY}" as="targetPoint"/>
+          <mxPoint x="360" y="390" as="sourcePoint"/>
+          <mxPoint x="360" y="480" as="targetPoint"/>
         </mxGeometry>
-      </mxCell>`;
-
-    // Permission Sets (between Identity Center and Master)
-    const permX = (identityX + masterX + masterW) / 2 - 50;
-    const permY1 = masterY + 30;
-    const permY2 = masterY + 90;
-
-    cells += `
-      <mxCell id="${getNextId()}" value="Admin Permission Set" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${COLORS.permissionSetBg};strokeColor=${COLORS.permissionSetBg};strokeWidth=2;fontSize=10;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
-        <mxGeometry x="${permX}" y="${permY1}" width="100" height="45" as="geometry"/>
-      </mxCell>`;
-
-    cells += `
-      <mxCell id="${getNextId()}" value="Dev/Tester Permission Set" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${COLORS.permissionSetBg};strokeColor=${COLORS.permissionSetBg};strokeWidth=2;fontSize=10;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
-        <mxGeometry x="${permX}" y="${permY2}" width="100" height="45" as="geometry"/>
       </mxCell>`;
 
     // Arrows: Identity Center → Permission Sets
     cells += `
-      <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+      <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${identityX + 80}" y="${identityY + 15}" as="sourcePoint"/>
-          <mxPoint x="${permX}" y="${permY1 + 22}" as="targetPoint"/>
+          <mxPoint x="390" y="348" as="sourcePoint"/>
+          <mxPoint x="${permX}" y="${permY1 + 25}" as="targetPoint"/>
         </mxGeometry>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+      <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${identityX + 80}" y="${identityY + 35}" as="sourcePoint"/>
-          <mxPoint x="${permX}" y="${permY2 + 22}" as="targetPoint"/>
+          <mxPoint x="390" y="372" as="sourcePoint"/>
+          <mxPoint x="${permX}" y="${permY2 + 25}" as="targetPoint"/>
         </mxGeometry>
       </mxCell>`;
 
-    // Arrows: Permission Sets → Master Account
+    // Arrows: Permission Sets → Master Account (routing AROUND, not through)
     cells += `
-      <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+      <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.3;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${permX + 100}" y="${permY1 + 22}" as="sourcePoint"/>
-          <mxPoint x="${masterX}" y="${masterY + 60}" as="targetPoint"/>
+          <mxPoint x="${permX + 50}" y="${permY1 + 25}" as="sourcePoint"/>
+          <mxPoint x="660" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="660" y="${permY1 + 25}"/>
+            <mxPoint x="660" y="150"/>
+          </Array>
         </mxGeometry>
       </mxCell>`;
 
     cells += `
-      <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+      <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.6;" edge="1" parent="1">
         <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${permX + 100}" y="${permY2 + 22}" as="sourcePoint"/>
-          <mxPoint x="${masterX}" y="${masterY + 100}" as="targetPoint"/>
+          <mxPoint x="${permX + 50}" y="${permY2 + 25}" as="sourcePoint"/>
+          <mxPoint x="700" y="180" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="700" y="${permY2 + 25}"/>
+            <mxPoint x="700" y="180"/>
+          </Array>
         </mxGeometry>
       </mxCell>`;
 
-    // Organizational Units (3 columns below master)
+    // Organizational Units (3 side-by-side, BELOW master account)
     const ous = [
       { name: 'Security/Core OU', accounts: security_ou },
       { name: 'Workload OU', accounts: workload_ou },
       { name: 'Networking OU', accounts: networking_ou },
     ];
 
-    const ouStartX = 690;
-    const ouY = 280;
-    const ouWidth = 200;
+    const ouStartX = 660;
+    const ouY = 300;
+    const ouWidth = 220;
     const ouHeight = 340;
-    const ouSpacing = 20;
+    const ouGap = 20;
 
-    let currentOuX = ouStartX;
+    let currentX = ouStartX;
 
-    ous.forEach((ou, ouIdx) => {
-      // OU container
+    ous.forEach((ou) => {
+      // OU container (pink dashed box)
       cells += `
-        <mxCell id="${getNextId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${COLORS.ouBorder};strokeWidth=2;verticalAlign=top;align=center;spacingTop=10;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="${currentOuX}" y="${ouY}" width="${ouWidth}" height="${ouHeight}" as="geometry"/>
+        <mxCell id="${getId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="${currentX}" y="${ouY}" width="${ouWidth}" height="${ouHeight}" as="geometry"/>
         </mxCell>`;
 
-      // OU icon
+      // OU icon (pink square)
       cells += `
-        <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${COLORS.permissionSetBg};strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.group;" vertex="1" parent="1">
-          <mxGeometry x="${currentOuX + ouWidth/2 - 20}" y="${ouY + 10}" width="40" height="40" as="geometry"/>
+        <mxCell id="${getId()}" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${PINK};strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="${currentX + ouWidth/2 - 20}" y="${ouY + 15}" width="40" height="40" as="geometry"/>
         </mxCell>`;
+
+      cells += `
+        <mxCell id="${getId()}" value="📁" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontColor=#FFFFFF;" vertex="1" parent="1">
+        <mxGeometry x="${currentX + ouWidth/2 - 20}" y="${ouY + 15}" width="40" height="40" as="geometry"/>
+      </mxCell>`;
 
       // OU label
       cells += `
-        <mxCell id="${getNextId()}" value="${ou.name}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${COLORS.text};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="${currentOuX + 10}" y="${ouY + 55}" width="${ouWidth - 20}" height="25" as="geometry"/>
+        <mxCell id="${getId()}" value="${ou.name}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="${currentX + 10}" y="${ouY + 60}" width="${ouWidth - 20}" height="20" as="geometry"/>
         </mxCell>`;
 
       // Accounts inside OU
       let accountY = ouY + 90;
-      const accountWidth = ouWidth - 30;
-      const accountHeight = 70;
-      const accountSpacing = 15;
 
-      ou.accounts.slice(0, 3).forEach((account, accIdx) => {
-        const accountName = account.name || `Account ${accIdx + 1}`;
-        const accountEmail = account.email || '';
+      ou.accounts.slice(0, 3).forEach((account) => {
+        const accountName = account.name || 'Account';
 
-        // Account box
+        // Account box (pink)
         cells += `
-          <mxCell id="${getNextId()}" value="${accountName}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${COLORS.accountFill};strokeColor=${COLORS.accountBorder};strokeWidth=2;fontSize=10;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=8;" vertex="1" parent="1">
-            <mxGeometry x="${currentOuX + 15}" y="${accountY}" width="${accountWidth}" height="${accountHeight}" as="geometry"/>
+          <mxCell id="${getId()}" value="${accountName}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+            <mxGeometry x="${currentX + 15}" y="${accountY}" width="${ouWidth - 30}" height="60" as="geometry"/>
           </mxCell>`;
 
-        // Account email
-        if (accountEmail) {
-          cells += `
-            <mxCell id="${getNextId()}" value="${accountEmail}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=8;fontColor=${COLORS.text};spacingLeft=10;" vertex="1" parent="1">
-              <mxGeometry x="${currentOuX + 20}" y="${accountY + 25}" width="${accountWidth - 10}" height="15" as="geometry"/>
-            </mxCell>`;
-        }
-
-        // Account icon (user + cube)
+        // Account icon (user + box)
         cells += `
-          <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${COLORS.permissionSetBg};strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="1">
-            <mxGeometry x="${currentOuX + accountWidth/2 - 5}" y="${accountY + 43}" width="20" height="20" as="geometry"/>
+          <mxCell id="${getId()}" value="👤" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=20;fontColor=${PINK};" vertex="1" parent="1">
+            <mxGeometry x="${currentX + ouWidth/2 - 20}" y="${accountY + 30}" width="20" height="20" as="geometry"/>
           </mxCell>`;
 
         cells += `
-          <mxCell id="${getNextId()}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${COLORS.permissionSetBg};strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourcegroups;" vertex="1" parent="1">
-            <mxGeometry x="${currentOuX + accountWidth/2 + 18}" y="${accountY + 43}" width="18" height="18" as="geometry"/>
+          <mxCell id="${getId()}" value="📦" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontColor=${PINK};" vertex="1" parent="1">
+            <mxGeometry x="${currentX + ouWidth/2 + 5}" y="${accountY + 30}" width="20" height="20" as="geometry"/>
           </mxCell>`;
 
-        accountY += accountHeight + accountSpacing;
+        accountY += 75;
       });
 
-      // Arrow from Master to OU (downward from master, then to OU top)
-      const arrowSourceY = masterY + masterH;
-      const arrowTargetX = currentOuX + ouWidth / 2;
-      const arrowTargetY = ouY;
-
+      // Arrow from Master to OU (downward, CLEAN routing)
       cells += `
-        <mxCell id="${getNextId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+        <mxCell id="${getId()}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="${masterX + masterW/2}" y="${arrowSourceY}" as="sourcePoint"/>
-            <mxPoint x="${arrowTargetX}" y="${arrowTargetY}" as="targetPoint"/>
+            <mxPoint x="${currentX + ouWidth/2}" y="240" as="sourcePoint"/>
+            <mxPoint x="${currentX + ouWidth/2}" y="${ouY}" as="targetPoint"/>
             <Array as="points">
-              <mxPoint x="${masterX + masterW/2}" y="${arrowSourceY + 15}"/>
-              <mxPoint x="${arrowTargetX}" y="${arrowSourceY + 15}"/>
+              <mxPoint x="${currentX + ouWidth/2}" y="280"/>
+              <mxPoint x="${currentX + ouWidth/2}" y="280"/>
             </Array>
           </mxGeometry>
         </mxCell>`;
 
-      currentOuX += ouWidth + ouSpacing;
+      currentX += ouWidth + ouGap;
     });
 
     // Generate final XML

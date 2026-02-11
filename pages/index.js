@@ -9,7 +9,6 @@ export default function Home() {
   const [architecture, setArchitecture] = useState(null);
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [diagramPNG, setDiagramPNG] = useState('');
   const fileInputRef = useRef(null);
 
   const handleFileUpload = async (event) => {
@@ -79,13 +78,6 @@ export default function Home() {
 
       const data = await response.json();
       setArchitecture(data.architecture);
-      
-      // Generate diagram PNG URL using draw.io export service
-      const xml = generateDrawioXML(data.architecture);
-      const encodedXML = encodeURIComponent(xml);
-      const pngURL = `https://kroki.io/blockdiag/png/${btoa(xml)}`;
-      setDiagramPNG(pngURL);
-      
       setStage('results');
     } catch (err) {
       setError(`Failed to generate architecture: ${err.message}`);
@@ -386,47 +378,6 @@ export default function Home() {
     a.download = `${architecture.client_name.replace(/\s+/g, '_')}_Organization.drawio`;
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  const downloadPNG = async () => {
-    // Use draw.io export service to convert XML to PNG
-    const xml = generateDrawioXML();
-    const encodedXML = encodeURIComponent(xml);
-    const exportURL = `https://exp.draw.io/ImageExport4/export?format=png&xml=${encodedXML}&w=1400&h=800`;
-    
-    try {
-      const response = await fetch(exportURL);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${architecture.client_name.replace(/\s+/g, '_')}_Organization.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('PNG export failed:', error);
-      alert('PNG export is temporarily unavailable. Please download the .drawio file and export from draw.io');
-    }
-  };
-
-  const downloadSVG = async () => {
-    const xml = generateDrawioXML();
-    const encodedXML = encodeURIComponent(xml);
-    const exportURL = `https://exp.draw.io/ImageExport4/export?format=svg&xml=${encodedXML}`;
-    
-    try {
-      const response = await fetch(exportURL);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${architecture.client_name.replace(/\s+/g, '_')}_Organization.svg`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('SVG export failed:', error);
-      alert('SVG export is temporarily unavailable. Please download the .drawio file and export from draw.io');
-    }
   };
 
   const downloadJSON = () => {

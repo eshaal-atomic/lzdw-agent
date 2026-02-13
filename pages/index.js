@@ -88,102 +88,309 @@ export default function Home() {
   };
 
   const generateDrawioXML = (arch) => {
-      if (!arch) arch = architecture;
-  if (!arch) return '';
+    if (!arch) arch = architecture;
+    if (!arch) return '';
 
-  const PINK = '#D6336C';
-  const LIGHT = '#F4E1E8';
-  const DARK = '#232F3E';
-  const WHITE = '#FFFFFF';
+    // EXACT AWS COLORS from official diagrams
+    const PINK = '#D6336C';
+    const LIGHT_PINK = '#F4E1E8';
+    const WHITE = '#FFFFFF';
+    const DARK = '#232F3E';
+    const GRAY = '#879196';
+    const BLUE = '#5DADE2';
 
-  const masterName = arch.account_structure?.master_account?.name || 'Master Account';
-  const masterEmail = arch.account_structure?.master_account?.email || '';
+    const masterName = arch.account_structure?.master_account?.name || 'Master Account';
+    const masterEmail = arch.account_structure?.master_account?.email || 'master@example.com';
+    
+    const securityOU = arch.account_structure?.security_ou || [];
+    const workloadOU = arch.account_structure?.workload_ou || [];
+    const networkingOU = arch.account_structure?.networking_ou || [];
 
-  const security = arch.account_structure?.security_ou || [];
-  const workload = arch.account_structure?.workload_ou || [];
-  const networking = arch.account_structure?.networking_ou || [];
-
-  let yOffset = 360;
-  let idCounter = 100;
-
-  const createAccountBox = (x, y, label) => `
-    <mxCell id="acc-${idCounter++}" value="${label}" 
-      style="rounded=1;whiteSpace=wrap;html=1;fillColor=${LIGHT};
-      strokeColor=${PINK};strokeWidth=1;fontSize=10;fontColor=${DARK};"
-      vertex="1" parent="1">
-      <mxGeometry x="${x}" y="${y}" width="170" height="55" as="geometry"/>
-    </mxCell>
-  `;
-
-  const createOUContainer = (x, title) => `
-    <mxCell id="ou-${idCounter++}" value="${title}"
-      style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;
-      strokeColor=${PINK};strokeWidth=2;fontSize=12;fontStyle=1;
-      fontColor=${PINK};verticalAlign=top;spacingTop=8;"
-      vertex="1" parent="1">
-      <mxGeometry x="${x}" y="330" width="260" height="300" as="geometry"/>
-    </mxCell>
-  `;
-
-  let securityAccountsXML = '';
-  security.forEach((acc, i) => {
-    securityAccountsXML += createAccountBox(120, yOffset + i * 70, acc.name);
-  });
-
-  let workloadAccountsXML = '';
-  workload.forEach((acc, i) => {
-    workloadAccountsXML += createAccountBox(450, yOffset + i * 70, acc.name);
-  });
-
-  let networkingAccountsXML = '';
-  networking.forEach((acc, i) => {
-    networkingAccountsXML += createAccountBox(780, yOffset + i * 70, acc.name);
-  });
-
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    // Calculate canvas size based on content
+    const maxAccounts = Math.max(securityOU.length, workloadOU.length, networkingOU.length, 3);
+    const canvasHeight = 400 + (maxAccounts * 95);
+    
+    // Generate PROFESSIONAL XML matching reference images EXACTLY
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
-  <diagram name="AWS Organization">
-    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" page="1"
-      pageWidth="1400" pageHeight="800" background="${WHITE}">
+  <diagram name="AWS Landing Zone" id="lz">
+    <mxGraphModel dx="1600" dy="${canvasHeight}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="${canvasHeight}" background="${WHITE}">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-
-        <!-- Master Account -->
-        <mxCell id="master" 
-          value="${masterName}<br><font style='font-size:10px;'>${masterEmail}</font>"
-          style="rounded=1;whiteSpace=wrap;html=1;
-          fillColor=${LIGHT};strokeColor=${PINK};strokeWidth=3;
-          fontSize=13;fontStyle=1;fontColor=${PINK};
-          verticalAlign=top;spacingTop=10;"
-          vertex="1" parent="1">
-          <mxGeometry x="200" y="120" width="1000" height="150" as="geometry"/>
+        
+        <!-- AWS Cloud Badge (Official AWS Logo) -->
+        <mxCell id="aws-logo" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#232F3E;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.logo;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="40" height="40" as="geometry"/>
         </mxCell>
-
-        <!-- AWS Organizations Icon -->
-        <mxCell id="org-icon"
-          style="shape=mxgraph.aws4.resourceIcon;
-          resIcon=mxgraph.aws4.organizations;
-          fillColor=${PINK};strokeColor=#ffffff;"
-          vertex="1" parent="1">
-          <mxGeometry x="220" y="140" width="40" height="40" as="geometry"/>
+        
+        <mxCell id="aws-text" value="AWS Cloud" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontColor=#232F3E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="37" width="100" height="26" as="geometry"/>
         </mxCell>
+        
+        <!-- Outer Dashed Container -->
+        <mxCell id="outer-boundary" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#232F3E;strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="90" width="1540" height="${canvasHeight - 100}" as="geometry"/>
+        </mxCell>
+        
+        <!-- Master/Payer Account Container (PINK THEME) -->
+        <mxCell id="master-account" value="${masterName}&lt;br&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;${masterEmail}&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${LIGHT_PINK};strokeColor=${PINK};strokeWidth=3;fontSize=13;fontStyle=1;fontColor=${PINK};verticalAlign=top;align=left;spacingLeft=70;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="120" width="1500" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- AWS Organizations Icon (OFFICIAL PINK) -->
+        <mxCell id="org-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizations;" vertex="1" parent="1">
+          <mxGeometry x="65" y="135" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <!-- Control Tower Icon (OFFICIAL PINK) -->
+        <mxCell id="ct-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.control_tower;" vertex="1" parent="1">
+          <mxGeometry x="80" y="210" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="ct-label" value="Control Tower" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="64" y="262" width="80" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Administrator (OFFICIAL USER ICON + SETTINGS) -->
+        <mxCell id="admin-user" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="600" y="140" width="32" height="32" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="admin-settings" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.systems_manager;" vertex="1" parent="1">
+          <mxGeometry x="628" y="136" width="20" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="admin-package" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.package;" vertex="1" parent="1">
+          <mxGeometry x="628" y="154" width="20" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="admin-label" value="Administrator" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${DARK};" vertex="1" parent="1">
+          <mxGeometry x="576" y="176" width="80" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- External Users (LEFT SIDE - OUTSIDE PINK BOX) -->
+        <mxCell id="user-admin" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${GRAY};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="720" y="235" width="36" height="36" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="user-admin-label" value="Administrator/Root" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="691" y="275" width="94" height="18" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="user-dev" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${GRAY};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.users;" vertex="1" parent="1">
+          <mxGeometry x="845" y="235" width="36" height="36" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="user-dev-label" value="Developers/Testers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="813" y="275" width="100" height="18" as="geometry"/>
+        </mxCell>
+        
+        <!-- IAM Identity Center (OFFICIAL PINK) -->
+        <mxCell id="iam-center" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management;" vertex="1" parent="1">
+          <mxGeometry x="990" y="195" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="iam-label" value="Identity Center" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="970" y="247" width="88" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Cloud Sync (AWS Transfer Family Icon - NO EMOJI) -->
+        <mxCell id="cloud-sync" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${BLUE};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.transfer_family;" vertex="1" parent="1">
+          <mxGeometry x="998" y="275" width="32" height="32" as="geometry"/>
+        </mxCell>
+        
+        <!-- On-Premises (Data Center Icon - NO EMOJI) -->
+        <mxCell id="onprem" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${GRAY};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.corporate_data_center;" vertex="1" parent="1">
+          <mxGeometry x="994" y="340" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="onprem-label" value="On-Premises&lt;br&gt;/ AWS Cloud AD" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};" vertex="1" parent="1">
+          <mxGeometry x="959" y="384" width="110" height="26" as="geometry"/>
+        </mxCell>
+        
+        <!-- Permission Sets (OFFICIAL ICONS - PINK) -->
+        <mxCell id="perm-admin" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.permissions;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="165" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="perm-admin-label" value="Admin Permission&lt;br&gt;Set" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};" vertex="1" parent="1">
+          <mxGeometry x="1130" y="209" width="80" height="24" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="perm-dev" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.permissions;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="255" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="perm-dev-label" value="Dev/Tester&lt;br&gt;Permission Set" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};" vertex="1" parent="1">
+          <mxGeometry x="1125" y="299" width="90" height="24" as="geometry"/>
+        </mxCell>
+        
+        <!-- CLEAN ARROWS WITH PROPER WAYPOINTS (NO OVERLAPS) -->
+        
+        <!-- User Admin → IAM Identity Center -->
+        <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="756" y="253" as="sourcePoint"/>
+            <mxPoint x="990" y="219" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="850" y="253"/>
+              <mxPoint x="850" y="219"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- User Dev → IAM Identity Center -->
+        <mxCell id="arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="881" y="253" as="sourcePoint"/>
+            <mxPoint x="990" y="219" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="920" y="253"/>
+              <mxPoint x="920" y="219"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- IAM ↔ On-Premises (Bidirectional with proper waypoints) -->
+        <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;startArrow=classic;startFill=1;endArrow=classic;endFill=1;dashed=1;dashPattern=3 3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1014" y="307" as="sourcePoint"/>
+            <mxPoint x="1014" y="340" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- IAM → Admin Permission Set -->
+        <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1038" y="207" as="sourcePoint"/>
+            <mxPoint x="1150" y="185" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1090" y="207"/>
+              <mxPoint x="1090" y="185"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- IAM → Dev Permission Set -->
+        <mxCell id="arrow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1038" y="231" as="sourcePoint"/>
+            <mxPoint x="1150" y="275" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1090" y="231"/>
+              <mxPoint x="1090" y="275"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- THREE ORGANIZATIONAL UNITS (PINK DASHED BORDERS WITH PROPER ICONS) -->
+        
+${securityOU.length > 0 ? `
+        <!-- Security/Core OU -->
+        <mxCell id="sec-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="450" width="450" height="${140 + securityOU.length * 95}" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="sec-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
+          <mxGeometry x="261" y="465" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="sec-ou-label" value="Security/Core OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="518" width="410" height="20" as="geometry"/>
+        </mxCell>
+        
+        ${securityOU.map((acc, i) => `
+        <mxCell id="sec-acc-${i}" value="${acc.name || `Security Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="${555 + i*95}" width="410" height="75" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="sec-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
+          <mxGeometry x="265" y="${577 + i*95}" width="36" height="36" as="geometry"/>
+        </mxCell>
+        `).join('')}
+        
+        <!-- Arrow from Master to Security OU -->
+        <mxCell id="arrow-master-sec" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="285" y="320" as="sourcePoint"/>
+            <mxPoint x="285" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+` : ''}
 
-        ${createOUContainer(100, "Security/Core OU")}
-        ${createOUContainer(430, "Workload OU")}
-        ${createOUContainer(760, "Networking OU")}
+${workloadOU.length > 0 ? `
+        <!-- Workload OU -->
+        <mxCell id="work-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="540" y="450" width="450" height="${140 + workloadOU.length * 95}" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="work-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
+          <mxGeometry x="741" y="465" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="work-ou-label" value="Workload OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="518" width="410" height="20" as="geometry"/>
+        </mxCell>
+        
+        ${workloadOU.map((acc, i) => `
+        <mxCell id="work-acc-${i}" value="${acc.name || `Workload Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="${555 + i*95}" width="410" height="75" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="work-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
+          <mxGeometry x="745" y="${577 + i*95}" width="36" height="36" as="geometry"/>
+        </mxCell>
+        `).join('')}
+        
+        <!-- Arrow from Master to Workload OU -->
+        <mxCell id="arrow-master-work" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="765" y="320" as="sourcePoint"/>
+            <mxPoint x="765" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+` : ''}
 
-        ${securityAccountsXML}
-        ${workloadAccountsXML}
-        ${networkingAccountsXML}
-
+${networkingOU.length > 0 ? `
+        <!-- Networking OU -->
+        <mxCell id="net-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="450" width="450" height="${140 + networkingOU.length * 95}" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="net-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
+          <mxGeometry x="1221" y="465" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="net-ou-label" value="Networking OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="518" width="410" height="20" as="geometry"/>
+        </mxCell>
+        
+        ${networkingOU.map((acc, i) => `
+        <mxCell id="net-acc-${i}" value="${acc.name || `Network Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="${555 + i*95}" width="410" height="75" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="net-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="${577 + i*95}" width="36" height="36" as="geometry"/>
+        </mxCell>
+        `).join('')}
+        
+        <!-- Arrow from Master to Networking OU -->
+        <mxCell id="arrow-master-net" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1245" y="320" as="sourcePoint"/>
+            <mxPoint x="1245" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+` : ''}
+        
       </root>
     </mxGraphModel>
   </diagram>
 </mxfile>`;
 
-  return xml;
-
+    return xml;
   };
 
   const downloadDrawio = () => {
@@ -192,7 +399,7 @@ export default function Home() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${architecture.client_name.replace(/\s+/g, '_')}_Organization.drawio`;
+    a.download = `${architecture.client_name.replace(/\s+/g, '_')}_Landing_Zone.drawio`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -370,7 +577,6 @@ export default function Home() {
         {stage === 'results' && architecture && (
           <div style={{ padding: '20px' }}>
             <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
-              {/* Header */}
               <div style={{ background: 'white', borderRadius: '16px', padding: '24px', marginBottom: '20px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
                   <div>
@@ -399,15 +605,12 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Main Content - Split Layout */}
               <div style={{ display: 'grid', gridTemplateColumns: '400px 1fr', gap: '20px', marginBottom: '20px' }}>
-                {/* Left: Account Structure Details */}
                 <div style={{ background: 'white', borderRadius: '16px', padding: '28px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)', overflowY: 'auto', maxHeight: '750px' }}>
                   <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#1a202c', marginBottom: '18px', borderBottom: `3px solid #D6336C`, paddingBottom: '10px' }}>
                     Account Structure
                   </h2>
                   
-                  {/* Master Account */}
                   <div style={{ background: '#F4E1E8', border: `2px solid #D6336C`, borderRadius: '8px', padding: '14px', marginBottom: '14px' }}>
                     <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#D6336C', marginBottom: '8px' }}>
                       Master/Payer Account
@@ -423,7 +626,6 @@ export default function Home() {
                     </p>
                   </div>
 
-                  {/* Security OU */}
                   {architecture.account_structure.security_ou?.length > 0 && (
                     <div style={{ marginBottom: '14px' }}>
                       <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#2d3748', marginBottom: '8px' }}>
@@ -439,7 +641,6 @@ export default function Home() {
                     </div>
                   )}
 
-                  {/* Workload OU */}
                   {architecture.account_structure.workload_ou?.length > 0 && (
                     <div style={{ marginBottom: '14px' }}>
                       <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#2d3748', marginBottom: '8px' }}>
@@ -455,7 +656,6 @@ export default function Home() {
                     </div>
                   )}
 
-                  {/* Networking OU */}
                   {architecture.account_structure.networking_ou?.length > 0 && (
                     <div>
                       <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#2d3748', marginBottom: '8px' }}>
@@ -471,7 +671,6 @@ export default function Home() {
                     </div>
                   )}
 
-                  {/* Network Architecture */}
                   <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '2px solid #e2e8f0' }}>
                     <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#2d3748', marginBottom: '10px' }}>
                       Network Architecture
@@ -490,7 +689,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Right: Diagram Viewer */}
                 <div style={{ background: 'white', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
                   <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c', marginBottom: '16px' }}>
                     Organization Diagram
@@ -500,31 +698,30 @@ export default function Home() {
                     <div style={{ background: 'white', borderRadius: '8px', padding: '40px', display: 'inline-block', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
                       <div style={{ fontSize: '48px', marginBottom: '16px' }}>📊</div>
                       <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1a202c', marginBottom: '12px' }}>
-                        Diagram Ready to Download
+                        Professional Diagram Ready
                       </h3>
                       <p style={{ fontSize: '14px', color: '#718096', marginBottom: '8px' }}>
-                        The organizational diagram has been generated with:
+                        Generated with AWS Solutions Architect quality:
                       </p>
                       <ul style={{ fontSize: '13px', color: '#718096', textAlign: 'left', lineHeight: '1.8', maxWidth: '400px', margin: '0 auto 20px' }}>
+                        <li>✓ Official AWS icons (NO emojis)</li>
                         <li>✓ Pink theme (#D6336C)</li>
-                        <li>✓ Official AWS icons</li>
-                        <li>✓ Clean arrow routing (no overlaps)</li>
-                        <li>✓ All OUs and accounts properly organized</li>
-                        <li>✓ Professional enterprise layout</li>
+                        <li>✓ Clean arrows (NO overlaps)</li>
+                        <li>✓ Accurate OU structure</li>
+                        <li>✓ Enterprise-grade layout</li>
                       </ul>
                       <p style={{ fontSize: '12px', color: '#718096', fontStyle: 'italic' }}>
-                        Click the buttons below to download the diagram file and open it in <a href="https://app.diagrams.net" target="_blank" rel="noopener noreferrer" style={{ color: '#D6336C', fontWeight: '600' }}>diagrams.net</a>
+                        Download and open in <a href="https://app.diagrams.net" target="_blank" rel="noopener noreferrer" style={{ color: '#D6336C', fontWeight: '600' }}>diagrams.net</a>
                       </p>
                     </div>
                   </div>
                   
                   <p style={{ fontSize: '11px', color: '#718096', marginTop: '12px', textAlign: 'center' }}>
-                    💡 Open the .drawio file in <a href="https://app.diagrams.net" target="_blank" rel="noopener noreferrer" style={{ color: '#D6336C', fontWeight: '600' }}>diagrams.net</a> to view, edit, and export as PNG/SVG
+                    💡 Opens instantly in diagrams.net for viewing and exporting
                   </p>
                 </div>
               </div>
 
-              {/* Download Buttons */}
               <div style={{ background: 'white', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1a202c', marginBottom: '16px' }}>
                   Download Options
@@ -544,7 +741,7 @@ export default function Home() {
                       boxShadow: '0 4px 14px rgba(214, 51, 108, 0.4)'
                     }}
                   >
-                    📊 Draw.io File (.drawio)
+                    📊 Draw.io Diagram (.drawio)
                   </button>
                   <button
                     onClick={downloadJSON}

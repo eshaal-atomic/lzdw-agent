@@ -292,7 +292,7 @@ ${securityOU.length > 0 ? `
           <mxGeometry x="60" y="450" width="450" height="${140 + securityOU.length * 95}" as="geometry"/>
         </mxCell>
         
-        <mxCell id="sec-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
+        <mxCell id="sec-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
           <mxGeometry x="261" y="465" width="48" height="48" as="geometry"/>
         </mxCell>
         
@@ -325,7 +325,7 @@ ${workloadOU.length > 0 ? `
           <mxGeometry x="540" y="450" width="450" height="${140 + workloadOU.length * 95}" as="geometry"/>
         </mxCell>
         
-        <mxCell id="work-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
+        <mxCell id="work-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
           <mxGeometry x="741" y="465" width="48" height="48" as="geometry"/>
         </mxCell>
         
@@ -358,7 +358,7 @@ ${networkingOU.length > 0 ? `
           <mxGeometry x="1020" y="450" width="450" height="${140 + networkingOU.length * 95}" as="geometry"/>
         </mxCell>
         
-        <mxCell id="net-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
+        <mxCell id="net-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
           <mxGeometry x="1221" y="465" width="48" height="48" as="geometry"/>
         </mxCell>
         

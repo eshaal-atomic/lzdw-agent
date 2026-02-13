@@ -88,285 +88,102 @@ export default function Home() {
   };
 
   const generateDrawioXML = (arch) => {
-    if (!arch) arch = architecture;
-    if (!arch) return '';
+      if (!arch) arch = architecture;
+  if (!arch) return '';
 
-    const PINK = '#D6336C';
-    const LIGHT_PINK = '#F4E1E8';
-    const WHITE = '#FFFFFF';
-    const DARK = '#232F3E';
+  const PINK = '#D6336C';
+  const LIGHT = '#F4E1E8';
+  const DARK = '#232F3E';
+  const WHITE = '#FFFFFF';
 
-    const masterName = arch.account_structure?.master_account?.name || 'Master Account';
-    const masterEmail = arch.account_structure?.master_account?.email || 'master@example.com';
-    
-    const securityOU = arch.account_structure?.security_ou || [];
-    const workloadOU = arch.account_structure?.workload_ou || [];
-    const networkingOU = arch.account_structure?.networking_ou || [];
+  const masterName = arch.account_structure?.master_account?.name || 'Master Account';
+  const masterEmail = arch.account_structure?.master_account?.email || '';
 
-    // Generate EXACT layout matching reference images
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  const security = arch.account_structure?.security_ou || [];
+  const workload = arch.account_structure?.workload_ou || [];
+  const networking = arch.account_structure?.networking_ou || [];
+
+  let yOffset = 360;
+  let idCounter = 100;
+
+  const createAccountBox = (x, y, label) => `
+    <mxCell id="acc-${idCounter++}" value="${label}" 
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=${LIGHT};
+      strokeColor=${PINK};strokeWidth=1;fontSize=10;fontColor=${DARK};"
+      vertex="1" parent="1">
+      <mxGeometry x="${x}" y="${y}" width="170" height="55" as="geometry"/>
+    </mxCell>
+  `;
+
+  const createOUContainer = (x, title) => `
+    <mxCell id="ou-${idCounter++}" value="${title}"
+      style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;
+      strokeColor=${PINK};strokeWidth=2;fontSize=12;fontStyle=1;
+      fontColor=${PINK};verticalAlign=top;spacingTop=8;"
+      vertex="1" parent="1">
+      <mxGeometry x="${x}" y="330" width="260" height="300" as="geometry"/>
+    </mxCell>
+  `;
+
+  let securityAccountsXML = '';
+  security.forEach((acc, i) => {
+    securityAccountsXML += createAccountBox(120, yOffset + i * 70, acc.name);
+  });
+
+  let workloadAccountsXML = '';
+  workload.forEach((acc, i) => {
+    workloadAccountsXML += createAccountBox(450, yOffset + i * 70, acc.name);
+  });
+
+  let networkingAccountsXML = '';
+  networking.forEach((acc, i) => {
+    networkingAccountsXML += createAccountBox(780, yOffset + i * 70, acc.name);
+  });
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
-  <diagram name="AWS Organization" id="org">
-    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" background="${WHITE}">
+  <diagram name="AWS Organization">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" page="1"
+      pageWidth="1400" pageHeight="800" background="${WHITE}">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        
-        <!-- AWS Cloud Badge -->
-        <mxCell id="aws-badge" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#232F3E;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.logo;" vertex="1" parent="1">
-          <mxGeometry x="30" y="20" width="40" height="40" as="geometry"/>
+
+        <!-- Master Account -->
+        <mxCell id="master" 
+          value="${masterName}<br><font style='font-size:10px;'>${masterEmail}</font>"
+          style="rounded=1;whiteSpace=wrap;html=1;
+          fillColor=${LIGHT};strokeColor=${PINK};strokeWidth=3;
+          fontSize=13;fontStyle=1;fontColor=${PINK};
+          verticalAlign=top;spacingTop=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="200" y="120" width="1000" height="150" as="geometry"/>
         </mxCell>
-        
-        <mxCell id="aws-text" value="AWS Cloud" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontColor=#232F3E;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="27" width="100" height="26" as="geometry"/>
+
+        <!-- AWS Organizations Icon -->
+        <mxCell id="org-icon"
+          style="shape=mxgraph.aws4.resourceIcon;
+          resIcon=mxgraph.aws4.organizations;
+          fillColor=${PINK};strokeColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="220" y="140" width="40" height="40" as="geometry"/>
         </mxCell>
-        
-        <!-- Outer Dashed Container -->
-        <mxCell id="outer-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#232F3E;strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="20" y="80" width="1360" height="690" as="geometry"/>
-        </mxCell>
-        
-        <!-- Master/Payer Account Container (PINK) -->
-        <mxCell id="master-container" value="${masterName}&lt;br&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;${masterEmail}&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${LIGHT_PINK};strokeColor=${PINK};strokeWidth=3;fontSize=12;fontStyle=1;fontColor=${PINK};verticalAlign=top;align=left;spacingLeft=60;spacingTop=10;" vertex="1" parent="1">
-          <mxGeometry x="40" y="110" width="1320" height="210" as="geometry"/>
-        </mxCell>
-        
-        <!-- AWS Organizations Icon (OFFICIAL) -->
-        <mxCell id="org-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizations;" vertex="1" parent="1">
-          <mxGeometry x="55" y="125" width="40" height="40" as="geometry"/>
-        </mxCell>
-        
-        <!-- Control Tower Icon (OFFICIAL) -->
-        <mxCell id="ct-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.control_tower;" vertex="1" parent="1">
-          <mxGeometry x="70" y="200" width="44" height="44" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="ct-label" value="Control&lt;br&gt;Tower" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="57" y="248" width="70" height="24" as="geometry"/>
-        </mxCell>
-        
-        <!-- Administrator Icon (RIGHT SIDE) -->
-        <mxCell id="admin-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" vertex="1" parent="1">
-          <mxGeometry x="580" y="135" width="28" height="28" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="admin-gear" value="⚙" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontColor=${DARK};" vertex="1" parent="1">
-          <mxGeometry x="604" y="131" width="18" height="18" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="admin-box" value="📦" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontColor=${DARK};" vertex="1" parent="1">
-          <mxGeometry x="604" y="147" width="18" height="18" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="admin-label" value="Administrator" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;fontColor=${DARK};" vertex="1" parent="1">
-          <mxGeometry x="558" y="168" width="80" height="18" as="geometry"/>
-        </mxCell>
-        
-        <!-- External Users (LEFT SIDE, OUTSIDE) -->
-        <mxCell id="user1-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#879196;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" vertex="1" parent="1">
-          <mxGeometry x="690" y="225" width="32" height="32" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="user1-label" value="Administrator/Root" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="664" y="262" width="84" height="18" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="user2-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#879196;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.users;" vertex="1" parent="1">
-          <mxGeometry x="800" y="225" width="32" height="32" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="user2-label" value="Developers/Testers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="769" y="262" width="94" height="18" as="geometry"/>
-        </mxCell>
-        
-        <!-- IAM Identity Center (OFFICIAL ICON) -->
-        <mxCell id="iam-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management;" vertex="1" parent="1">
-          <mxGeometry x="950" y="190" width="44" height="44" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="iam-label" value="Identity Center" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=${DARK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="932" y="238" width="80" height="18" as="geometry"/>
-        </mxCell>
-        
-        <!-- Cloud Sync to On-Prem -->
-        <mxCell id="cloud-icon" value="☁" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=26;fontColor=#5DADE2;" vertex="1" parent="1">
-          <mxGeometry x="957" y="266" width="30" height="30" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="sync-arrow" value="↑" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=18;fontColor=#5DADE2;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="962" y="286" width="20" height="20" as="geometry"/>
-        </mxCell>
-        
-        <!-- On-Premises -->
-        <mxCell id="onprem-icon" value="🏢" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=28;fontColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="958" y="1040" width="28" height="28" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="onprem-label" value="On-Premises&lt;br&gt;/ AWS Cloud AD" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=8;fontColor=${DARK};" vertex="1" parent="1">
-          <mxGeometry x="932" y="1072" width="80" height="26" as="geometry"/>
-        </mxCell>
-        
-        <!-- Permission Sets (OFFICIAL ICONS) -->
-        <mxCell id="perm1-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.permissions;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="160" width="36" height="36" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="perm1-label" value="Admin Permission&lt;br&gt;Set" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=8;fontColor=${DARK};" vertex="1" parent="1">
-          <mxGeometry x="1073" y="200" width="70" height="22" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="perm2-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.permissions;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="245" width="36" height="36" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="perm2-label" value="Dev/Tester&lt;br&gt;Permission Set" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=8;fontColor=${DARK};" vertex="1" parent="1">
-          <mxGeometry x="1068" y="285" width="80" height="22" as="geometry"/>
-        </mxCell>
-        
-        <!-- CLEAN ARROWS WITH PROPER WAYPOINTS -->
-        <mxCell id="arrow-user1-iam" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="user1-icon" target="iam-icon">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="706" y="212"/>
-              <mxPoint x="850" y="212"/>
-              <mxPoint x="850" y="212"/>
-              <mxPoint x="972" y="212"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        
-        <mxCell id="arrow-user2-iam" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="user2-icon" target="iam-icon">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="816" y="212"/>
-              <mxPoint x="972" y="212"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        
-        <mxCell id="arrow-iam-onprem" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;startArrow=classic;startFill=1;endArrow=classic;endFill=1;dashed=1;dashPattern=3 3;" edge="1" parent="1" source="iam-icon" target="onprem-icon">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="arrow-iam-perm1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="iam-icon" target="perm1-icon">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1040" y="212"/>
-              <mxPoint x="1108" y="212"/>
-              <mxPoint x="1108" y="178"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        
-        <mxCell id="arrow-iam-perm2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="iam-icon" target="perm2-icon">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1040" y="212"/>
-              <mxPoint x="1108" y="212"/>
-              <mxPoint x="1108" y="263"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        
-        <!-- THREE ORGANIZATIONAL UNITS (PINK BORDERS) -->
-        
-        <!-- Security/Core OU -->
-        <mxCell id="sec-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="50" y="370" width="400" height="380" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="sec-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
-          <mxGeometry x="226" y="385" width="48" height="48" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="sec-ou-label" value="Security/Core OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="70" y="438" width="360" height="18" as="geometry"/>
-        </mxCell>
-        
-        ${securityOU.slice(0, 3).map((acc, i) => `
-        <mxCell id="sec-acc-${i}" value="${acc.name || `Security Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=10;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
-          <mxGeometry x="70" y="${475 + i*90}" width="360" height="70" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="sec-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="230" y="${495 + i*90}" width="32" height="32" as="geometry"/>
-        </mxCell>
-        `).join('')}
-        
-        <!-- Workload OU -->
-        <mxCell id="work-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="480" y="370" width="400" height="380" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="work-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
-          <mxGeometry x="656" y="385" width="48" height="48" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="work-ou-label" value="Workload OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="500" y="438" width="360" height="18" as="geometry"/>
-        </mxCell>
-        
-        ${workloadOU.slice(0, 3).map((acc, i) => `
-        <mxCell id="work-acc-${i}" value="${acc.name || `Workload Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=10;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
-          <mxGeometry x="500" y="${475 + i*90}" width="360" height="70" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="work-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="660" y="${495 + i*90}" width="32" height="32" as="geometry"/>
-        </mxCell>
-        `).join('')}
-        
-        <!-- Networking OU -->
-        <mxCell id="net-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="910" y="370" width="400" height="380" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="net-ou-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizational_unit;" vertex="1" parent="1">
-          <mxGeometry x="1086" y="385" width="48" height="48" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="net-ou-label" value="Networking OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="930" y="438" width="360" height="18" as="geometry"/>
-        </mxCell>
-        
-        ${networkingOU.slice(0, 3).map((acc, i) => `
-        <mxCell id="net-acc-${i}" value="${acc.name || `Network Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=10;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
-          <mxGeometry x="930" y="${475 + i*90}" width="360" height="70" as="geometry"/>
-        </mxCell>
-        
-        <mxCell id="net-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="${495 + i*90}" width="32" height="32" as="geometry"/>
-        </mxCell>
-        `).join('')}
-        
-        <!-- Arrows from Master to OUs (CLEAN ROUTING) -->
-        <mxCell id="arrow-master-sec" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="250" y="320" as="sourcePoint"/>
-            <mxPoint x="250" y="370" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        
-        <mxCell id="arrow-master-work" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="680" y="320" as="sourcePoint"/>
-            <mxPoint x="680" y="370" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        
-        <mxCell id="arrow-master-net" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1110" y="320" as="sourcePoint"/>
-            <mxPoint x="1110" y="370" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        
+
+        ${createOUContainer(100, "Security/Core OU")}
+        ${createOUContainer(430, "Workload OU")}
+        ${createOUContainer(760, "Networking OU")}
+
+        ${securityAccountsXML}
+        ${workloadAccountsXML}
+        ${networkingAccountsXML}
+
       </root>
     </mxGraphModel>
   </diagram>
 </mxfile>`;
 
-    return xml;
+  return xml;
+
   };
 
   const downloadDrawio = () => {

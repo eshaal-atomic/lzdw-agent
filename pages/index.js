@@ -91,13 +91,12 @@ export default function Home() {
     if (!arch) arch = architecture;
     if (!arch) return '';
 
-    // EXACT AWS COLORS from official diagrams
+    // EXACT AWS COLORS
     const PINK = '#D6336C';
     const LIGHT_PINK = '#F4E1E8';
     const WHITE = '#FFFFFF';
     const DARK = '#232F3E';
     const GRAY = '#879196';
-    const BLUE = '#5DADE2';
 
     const masterName = arch.account_structure?.master_account?.name || 'Master Account';
     const masterEmail = arch.account_structure?.master_account?.email || 'master@example.com';
@@ -106,11 +105,10 @@ export default function Home() {
     const workloadOU = arch.account_structure?.workload_ou || [];
     const networkingOU = arch.account_structure?.networking_ou || [];
 
-    // Calculate canvas size based on content
+    // Calculate canvas size
     const maxAccounts = Math.max(securityOU.length, workloadOU.length, networkingOU.length, 3);
-    const canvasHeight = 400 + (maxAccounts * 95);
+    const canvasHeight = 450 + (maxAccounts * 95);
     
-    // Generate PROFESSIONAL XML matching reference images EXACTLY
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
   <diagram name="AWS Landing Zone" id="lz">
@@ -119,7 +117,7 @@ export default function Home() {
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
         
-        <!-- AWS Cloud Badge (Official AWS Logo) -->
+        <!-- AWS Cloud Badge -->
         <mxCell id="aws-logo" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#232F3E;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.logo;" vertex="1" parent="1">
           <mxGeometry x="40" y="30" width="40" height="40" as="geometry"/>
         </mxCell>
@@ -133,17 +131,17 @@ export default function Home() {
           <mxGeometry x="30" y="90" width="1540" height="${canvasHeight - 100}" as="geometry"/>
         </mxCell>
         
-        <!-- Master/Payer Account Container (PINK THEME) -->
+        <!-- Master/Payer Account Container -->
         <mxCell id="master-account" value="${masterName}&lt;br&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;${masterEmail}&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${LIGHT_PINK};strokeColor=${PINK};strokeWidth=3;fontSize=13;fontStyle=1;fontColor=${PINK};verticalAlign=top;align=left;spacingLeft=70;spacingTop=10;" vertex="1" parent="1">
           <mxGeometry x="50" y="120" width="1500" height="200" as="geometry"/>
         </mxCell>
         
-        <!-- AWS Organizations Icon (OFFICIAL PINK) -->
+        <!-- AWS Organizations Icon -->
         <mxCell id="org-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizations;" vertex="1" parent="1">
           <mxGeometry x="65" y="135" width="48" height="48" as="geometry"/>
         </mxCell>
         
-        <!-- Control Tower Icon (OFFICIAL PINK) -->
+        <!-- Control Tower Icon -->
         <mxCell id="ct-icon" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.control_tower;" vertex="1" parent="1">
           <mxGeometry x="80" y="210" width="48" height="48" as="geometry"/>
         </mxCell>
@@ -152,7 +150,7 @@ export default function Home() {
           <mxGeometry x="64" y="262" width="80" height="20" as="geometry"/>
         </mxCell>
         
-        <!-- Administrator (OFFICIAL USER ICON + SETTINGS) -->
+        <!-- Administrator Icons -->
         <mxCell id="admin-user" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" vertex="1" parent="1">
           <mxGeometry x="600" y="140" width="32" height="32" as="geometry"/>
         </mxCell>
@@ -169,7 +167,7 @@ export default function Home() {
           <mxGeometry x="576" y="176" width="80" height="20" as="geometry"/>
         </mxCell>
         
-        <!-- External Users (LEFT SIDE - OUTSIDE PINK BOX) -->
+        <!-- External Users -->
         <mxCell id="user-admin" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${GRAY};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" vertex="1" parent="1">
           <mxGeometry x="720" y="235" width="36" height="36" as="geometry"/>
         </mxCell>
@@ -186,7 +184,7 @@ export default function Home() {
           <mxGeometry x="813" y="275" width="100" height="18" as="geometry"/>
         </mxCell>
         
-        <!-- IAM Identity Center (OFFICIAL PINK) -->
+        <!-- IAM Identity Center -->
         <mxCell id="iam-center" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management;" vertex="1" parent="1">
           <mxGeometry x="990" y="195" width="48" height="48" as="geometry"/>
         </mxCell>
@@ -195,12 +193,12 @@ export default function Home() {
           <mxGeometry x="970" y="247" width="88" height="20" as="geometry"/>
         </mxCell>
         
-        <!-- Cloud Sync (AWS Transfer Family Icon - NO EMOJI) -->
-        <mxCell id="cloud-sync" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${BLUE};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.transfer_family;" vertex="1" parent="1">
+        <!-- Cloud Sync -->
+        <mxCell id="cloud-sync" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#5DADE2;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.transfer_family;" vertex="1" parent="1">
           <mxGeometry x="998" y="275" width="32" height="32" as="geometry"/>
         </mxCell>
         
-        <!-- On-Premises (Data Center Icon - NO EMOJI) -->
+        <!-- On-Premises -->
         <mxCell id="onprem" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${GRAY};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.corporate_data_center;" vertex="1" parent="1">
           <mxGeometry x="994" y="340" width="40" height="40" as="geometry"/>
         </mxCell>
@@ -209,7 +207,7 @@ export default function Home() {
           <mxGeometry x="959" y="384" width="110" height="26" as="geometry"/>
         </mxCell>
         
-        <!-- Permission Sets (OFFICIAL ICONS - PINK) -->
+        <!-- Permission Sets -->
         <mxCell id="perm-admin" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.permissions;" vertex="1" parent="1">
           <mxGeometry x="1150" y="165" width="40" height="40" as="geometry"/>
         </mxCell>
@@ -226,9 +224,7 @@ export default function Home() {
           <mxGeometry x="1125" y="299" width="90" height="24" as="geometry"/>
         </mxCell>
         
-        <!-- CLEAN ARROWS WITH PROPER WAYPOINTS (NO OVERLAPS) -->
-        
-        <!-- User Admin → IAM Identity Center -->
+        <!-- CLEAN ARROWS -->
         <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="756" y="253" as="sourcePoint"/>
@@ -240,7 +236,6 @@ export default function Home() {
           </mxGeometry>
         </mxCell>
         
-        <!-- User Dev → IAM Identity Center -->
         <mxCell id="arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="881" y="253" as="sourcePoint"/>
@@ -252,7 +247,6 @@ export default function Home() {
           </mxGeometry>
         </mxCell>
         
-        <!-- IAM ↔ On-Premises (Bidirectional with proper waypoints) -->
         <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;startArrow=classic;startFill=1;endArrow=classic;endFill=1;dashed=1;dashPattern=3 3;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1014" y="307" as="sourcePoint"/>
@@ -260,7 +254,6 @@ export default function Home() {
           </mxGeometry>
         </mxCell>
         
-        <!-- IAM → Admin Permission Set -->
         <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1038" y="207" as="sourcePoint"/>
@@ -272,7 +265,6 @@ export default function Home() {
           </mxGeometry>
         </mxCell>
         
-        <!-- IAM → Dev Permission Set -->
         <mxCell id="arrow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1038" y="231" as="sourcePoint"/>
@@ -284,7 +276,7 @@ export default function Home() {
           </mxGeometry>
         </mxCell>
         
-        <!-- THREE ORGANIZATIONAL UNITS (PINK DASHED BORDERS WITH PROPER ICONS) -->
+        <!-- ORGANIZATIONAL UNITS WITH PROPER ICONS -->
         
 ${securityOU.length > 0 ? `
         <!-- Security/Core OU -->
@@ -292,8 +284,14 @@ ${securityOU.length > 0 ? `
           <mxGeometry x="60" y="450" width="450" height="${140 + securityOU.length * 95}" as="geometry"/>
         </mxCell>
         
-        <mxCell id="sec-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
+        <!-- OU Icon as PINK RECTANGLE -->
+        <mxCell id="sec-ou-icon-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${PINK};strokeColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="261" y="465" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <!-- WHITE FOLDER GRAPHIC INSIDE -->
+        <mxCell id="sec-ou-icon-folder" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ffffff;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.folder;" vertex="1" parent="1">
+          <mxGeometry x="271" y="475" width="28" height="28" as="geometry"/>
         </mxCell>
         
         <mxCell id="sec-ou-label" value="Security/Core OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
@@ -310,7 +308,6 @@ ${securityOU.length > 0 ? `
         </mxCell>
         `).join('')}
         
-        <!-- Arrow from Master to Security OU -->
         <mxCell id="arrow-master-sec" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="285" y="320" as="sourcePoint"/>
@@ -325,8 +322,12 @@ ${workloadOU.length > 0 ? `
           <mxGeometry x="540" y="450" width="450" height="${140 + workloadOU.length * 95}" as="geometry"/>
         </mxCell>
         
-        <mxCell id="work-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
+        <mxCell id="work-ou-icon-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${PINK};strokeColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="741" y="465" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="work-ou-icon-folder" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ffffff;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.folder;" vertex="1" parent="1">
+          <mxGeometry x="751" y="475" width="28" height="28" as="geometry"/>
         </mxCell>
         
         <mxCell id="work-ou-label" value="Workload OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
@@ -343,7 +344,6 @@ ${workloadOU.length > 0 ? `
         </mxCell>
         `).join('')}
         
-        <!-- Arrow from Master to Workload OU -->
         <mxCell id="arrow-master-work" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="765" y="320" as="sourcePoint"/>
@@ -358,8 +358,12 @@ ${networkingOU.length > 0 ? `
           <mxGeometry x="1020" y="450" width="450" height="${140 + networkingOU.length * 95}" as="geometry"/>
         </mxCell>
         
-        <mxCell id="net-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
+        <mxCell id="net-ou-icon-bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=${PINK};strokeColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="1221" y="465" width="48" height="48" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="net-ou-icon-folder" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#ffffff;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.folder;" vertex="1" parent="1">
+          <mxGeometry x="1231" y="475" width="28" height="28" as="geometry"/>
         </mxCell>
         
         <mxCell id="net-ou-label" value="Networking OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
@@ -376,7 +380,6 @@ ${networkingOU.length > 0 ? `
         </mxCell>
         `).join('')}
         
-        <!-- Arrow from Master to Networking OU -->
         <mxCell id="arrow-master-net" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${DARK};strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1245" y="320" as="sourcePoint"/>
@@ -701,24 +704,20 @@ ${networkingOU.length > 0 ? `
                         Professional Diagram Ready
                       </h3>
                       <p style={{ fontSize: '14px', color: '#718096', marginBottom: '8px' }}>
-                        Generated with AWS Solutions Architect quality:
+                        AWS Solutions Architect quality:
                       </p>
                       <ul style={{ fontSize: '13px', color: '#718096', textAlign: 'left', lineHeight: '1.8', maxWidth: '400px', margin: '0 auto 20px' }}>
-                        <li>✓ Official AWS icons (NO emojis)</li>
-                        <li>✓ Pink theme (#D6336C)</li>
+                        <li>✓ COMPOSITE OU icons (WILL RENDER)</li>
+                        <li>✓ ALL client accounts shown</li>
+                        <li>✓ Dynamic per-client data</li>
                         <li>✓ Clean arrows (NO overlaps)</li>
-                        <li>✓ Accurate OU structure</li>
-                        <li>✓ Enterprise-grade layout</li>
+                        <li>✓ Enterprise layout</li>
                       </ul>
                       <p style={{ fontSize: '12px', color: '#718096', fontStyle: 'italic' }}>
                         Download and open in <a href="https://app.diagrams.net" target="_blank" rel="noopener noreferrer" style={{ color: '#D6336C', fontWeight: '600' }}>diagrams.net</a>
                       </p>
                     </div>
                   </div>
-                  
-                  <p style={{ fontSize: '11px', color: '#718096', marginTop: '12px', textAlign: 'center' }}>
-                    💡 Opens instantly in diagrams.net for viewing and exporting
-                  </p>
                 </div>
               </div>
 

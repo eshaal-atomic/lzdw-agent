@@ -396,7 +396,7 @@ Return ONLY valid JSON (no markdown, no preamble). Make this architecture UNIQUE
         fixAccountEmails(architecture.account_structure.networking_ou, 'net');
       
       // 9. FINAL VALIDATION LOG
-      console.log(' Architecture validated:', {
+      console.log('✅ Architecture validated:', {
         client: architecture.client_name,
         security_accounts: architecture.account_structure.security_ou.length,
         workload_accounts: architecture.account_structure.workload_ou.length,

@@ -107,7 +107,7 @@ export default function Home() {
 
     // Calculate canvas size
     const maxAccounts = Math.max(securityOU.length, workloadOU.length, networkingOU.length, 3);
-    const canvasHeight = 450 + (maxAccounts * 95);
+    const canvasHeight = 450 + (maxAccounts * 80);
     
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
@@ -281,27 +281,27 @@ export default function Home() {
 ${securityOU.length > 0 ? `
         <!-- Security/Core OU -->
         <mxCell id="sec-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="60" y="450" width="450" height="${140 + securityOU.length * 95}" as="geometry"/>
+          <mxGeometry x="60" y="450" width="450" height="${120 + securityOU.length * 80}" as="geometry"/>
         </mxCell>
         
         <!-- OU Icon - AWS Account/Folder Icon -->
         <mxCell id="sec-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="261" y="465" width="48" height="48" as="geometry"/>
+          <mxGeometry x="267" y="470" width="36" height="36" as="geometry"/>
         </mxCell>
         
-        <mxCell id="sec-ou-label" value="Security/Core OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="sec-ou-label" value="${architecture.client_name || 'Client'} Security OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="80" y="518" width="410" height="20" as="geometry"/>
         </mxCell>
         
         ${securityOU.map((acc, i) => `
         <!-- Account Box -->
-        <mxCell id="sec-acc-${i}" value="${acc.name || `Security Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
-          <mxGeometry x="80" y="${555 + i*95}" width="410" height="75" as="geometry"/>
+        <mxCell id="sec-acc-${i}" value="    ${acc.name || `Security Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=middle;align=left;spacingLeft=50;" vertex="1" parent="1">
+          <mxGeometry x="80" y="${555 + i*80}" width="410" height="60" as="geometry"/>
         </mxCell>
         
-        <!-- ONE Account Icon -->
+        <!-- Account Icon - SMALL, on LEFT -->
         <mxCell id="sec-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="267" y="${582 + i*95}" width="36" height="36" as="geometry"/>
+          <mxGeometry x="95" y="${570 + i*80}" width="30" height="30" as="geometry"/>
         </mxCell>
         `).join('')}
         
@@ -316,26 +316,26 @@ ${securityOU.length > 0 ? `
 ${workloadOU.length > 0 ? `
         <!-- Workload OU -->
         <mxCell id="work-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="540" y="450" width="450" height="${140 + workloadOU.length * 95}" as="geometry"/>
+          <mxGeometry x="540" y="450" width="450" height="${120 + workloadOU.length * 80}" as="geometry"/>
         </mxCell>
         
         <mxCell id="work-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="741" y="465" width="48" height="48" as="geometry"/>
+          <mxGeometry x="747" y="470" width="36" height="36" as="geometry"/>
         </mxCell>
         
-        <mxCell id="work-ou-label" value="Workload OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="work-ou-label" value="${architecture.client_name || 'Client'} Workload OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="560" y="518" width="410" height="20" as="geometry"/>
         </mxCell>
         
         ${workloadOU.map((acc, i) => `
         <!-- Account Box -->
-        <mxCell id="work-acc-${i}" value="${acc.name || `Workload Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
-          <mxGeometry x="560" y="${555 + i*95}" width="410" height="75" as="geometry"/>
+        <mxCell id="work-acc-${i}" value="    ${acc.name || `Workload Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=middle;align=left;spacingLeft=50;" vertex="1" parent="1">
+          <mxGeometry x="560" y="${555 + i*80}" width="410" height="60" as="geometry"/>
         </mxCell>
         
-        <!-- ONE Account Icon -->
+        <!-- Account Icon - SMALL, on LEFT -->
         <mxCell id="work-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="747" y="${582 + i*95}" width="36" height="36" as="geometry"/>
+          <mxGeometry x="575" y="${570 + i*80}" width="30" height="30" as="geometry"/>
         </mxCell>
         `).join('')}
         
@@ -350,26 +350,26 @@ ${workloadOU.length > 0 ? `
 ${networkingOU.length > 0 ? `
         <!-- Networking OU -->
         <mxCell id="net-ou-container" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=${PINK};strokeWidth=2;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="450" width="450" height="${140 + networkingOU.length * 95}" as="geometry"/>
+          <mxGeometry x="1020" y="450" width="450" height="${120 + networkingOU.length * 80}" as="geometry"/>
         </mxCell>
         
         <mxCell id="net-ou-icon" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="1221" y="465" width="48" height="48" as="geometry"/>
+          <mxGeometry x="1227" y="470" width="36" height="36" as="geometry"/>
         </mxCell>
         
-        <mxCell id="net-ou-label" value="Networking OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="net-ou-label" value="${architecture.client_name || 'Client'} Networking OU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=12;fontColor=${PINK};fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="1040" y="518" width="410" height="20" as="geometry"/>
         </mxCell>
         
         ${networkingOU.map((acc, i) => `
         <!-- Account Box -->
-        <mxCell id="net-acc-${i}" value="${acc.name || `Network Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="${555 + i*95}" width="410" height="75" as="geometry"/>
+        <mxCell id="net-acc-${i}" value="    ${acc.name || `Network Account ${i+1}`}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${WHITE};strokeColor=${PINK};strokeWidth=2;fontSize=11;fontStyle=1;fontColor=${PINK};verticalAlign=middle;align=left;spacingLeft=50;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="${555 + i*80}" width="410" height="60" as="geometry"/>
         </mxCell>
         
-        <!-- ONE Account Icon -->
+        <!-- Account Icon - SMALL, on LEFT -->
         <mxCell id="net-acc-icon-${i}" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=${PINK};strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.account;" vertex="1" parent="1">
-          <mxGeometry x="1227" y="${582 + i*95}" width="36" height="36" as="geometry"/>
+          <mxGeometry x="1055" y="${570 + i*80}" width="30" height="30" as="geometry"/>
         </mxCell>
         `).join('')}
         
